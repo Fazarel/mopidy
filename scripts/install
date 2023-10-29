@@ -65,12 +65,12 @@ ynh_system_user_create --username=$app --home_dir="$install_dir" --use_shell --g
 #=================================================
 ynh_script_progression --message="Setting up source files..." --weight=1
 
-add_mopidy_repo
-ynh_package_update
-ynh_package_install mopidy mopidy-local mopidy-mpd mopidy-podcast mopidy-podcast-itunes mopidy-soundcloud mopidy-spotify
-sudo python3 -m pip install Mopidy-MusicBox-Webclient
+#add_mopidy_repo
+#ynh_package_update
+#ynh_package_install mopidy mopidy-local mopidy-mpd mopidy-podcast mopidy-podcast-itunes mopidy-soundcloud mopidy-spotify
+#sudo python3 -m pip install Mopidy-MusicBox-Webclient
 
-remove_mopidy_repo
+#remove_mopidy_repo
 
 #=================================================
 # NGINX CONFIGURATION

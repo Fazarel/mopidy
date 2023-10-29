@@ -89,3 +89,7 @@ ram.runtime = "50M"
 
     [resources.apt]
     packages = "python3-pip"
+
+    extras.mopidy.repo = "deb https://apt.mopidy.com/ bullseye main contrib non-free"
+    extras.mopidy.key = "https://apt.mopidy.com/mopidy.gpg"
+    extras.mopidy.packages = ["mopidy", "mopidy-local", "mopidy-mpd", "mopidy-podcast", "mopidy-podcast-itunes", "mopidy-soundcloud", "mopidy-spotify"]   
