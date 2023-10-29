@@ -199,16 +199,16 @@ ynh_systemd_action --service_name=$app --action="start"
 ynh_script_progression --message="Configuring permissions..."
 
 # Make app public if necessary
-if [ $init_main_permission = "visitors" ]
-then
+#if [ $init_main_permission = "visitors" ]
+#then
 	# Everyone can access the app.
 	# The "main" permission is automatically created before the install script.
-	ynh_permission_update --permission="main" --add="visitors"
-fi
+	#ynh_permission_update --permission="main" --add="visitors"
+#fi
 
-ynh_permission_url --permission="main" --add_url="$domain/mopidy/ws"
-ynh_permission_url --permission="main" --add_url="$domain/musicbox_webclient"
-ynh_permission_url --permission="main" --add_url="$domain/local"
+#ynh_permission_url --permission="main" --add_url="$domain/mopidy/ws"
+#ynh_permission_url --permission="main" --add_url="$domain/musicbox_webclient"
+#ynh_permission_url --permission="main" --add_url="$domain/local"
 
 
 #=================================================
