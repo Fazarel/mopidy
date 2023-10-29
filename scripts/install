@@ -16,6 +16,9 @@ source /usr/share/yunohost/helpers
 # - $db_name
 # ...
 
+domain=$YNH_APP_ARG_DOMAIN
+path_url=$YNH_APP_ARG_PATH
+
 
 #=================================================
 # MANAGE SCRIPT FAILURE
