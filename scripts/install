@@ -94,6 +94,21 @@ ynh_script_progression --message="Building multimedia directory..."
 media_dir="/home/yunohost.multimedia/share/Music"
 ynh_multimedia_build_main_dir      # /home/yunohost.multimedia
 
+#=================================================
+# CREATE DATA DIRECTORY
+#=================================================
+ynh_script_progression --message="Creating a data directory..."
+
+datadir=/home/yunohost.app/$app
+ynh_app_setting_set --app=$app --key=datadir --value=$datadir
+
+mkdir -p $datadir
+mkdir -p "$datadir/data"          # /home/yunohost.app/mopidy/data
+mkdir -p "$datadir/cache"         # /home/yunohost.app/mopidy/cache
+
+chmod 750 "$datadir"
+chmod -R o-rwx "$datadir"
+chown -R $app:www-data "$datadir"
 
 #=================================================
 # ADD A CONFIGURATION
