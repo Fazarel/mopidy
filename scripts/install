@@ -70,7 +70,7 @@ ynh_script_progression --message="Setting up source files..." --weight=1
 
 add_mopidy_repo
 ynh_package_update
-ynh_package_install mopidy mopidy-local mopidy-mpd mopidy-podcast mopidy-podcast-itunes mopidy-soundcloud mopidy-spotify
+ynh_package_install mopidy mopidy-local mopidy-mpd mopidy-podcast mopidy-podcast-itunes mopidy-soundcloud
 #sudo python3 -m pip install Mopidy-MusicBox-Webclient
 
 remove_mopidy_repo
