@@ -1,0 +1,205 @@
+#!/bin/bash
+
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source _common.sh
+source /usr/share/yunohost/helpers
+
+# Resources defined in the manifest are provisioned prior to this script
+# and corresponding settings are also available, such as:
+# - $install_dir
+# - $port
+# - $db_name
+# ...
+
+
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
+
+ynh_clean_setup () {
+	ynh_clean_check_starting
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+
+#=================================================
+# STANDARD MODIFICATIONS
+#=================================================
+# FIND AND OPEN A PORT
+#=================================================
+ynh_script_progression --message="Finding an available port..."
+
+# Find an available port
+port=$(ynh_find_port --port=6680)
+ynh_app_setting_set --app=$app --key=port --value=$port
+
+if [ $mpd_ext -eq 1 ]; then
+	mpd_port=$(ynh_find_port --port=6600)
+	ynh_app_setting_set --app=$app --key=mpd_port --value=$mpd_port
+	ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $mpd_port
+	mpd_state="true"
+else
+	mpd_state="false"
+fi
+
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..."
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir="$install_dir" --use_shell --groups="audio"
+
+
+#=================================================
+# APP "BUILD" (DEPLOYING SOURCES, VENV, COMPILING ETC)
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+ynh_script_progression --message="Setting up source files..." --weight=1
+
+add_mopidy_repo
+ynh_package_update
+ynh_package_install mopidy mopidy-local mopidy-mpd mopidy-podcast mopidy-podcast-itunes mopidy-soundcloud mopidy-spotify
+sudo python3 -m pip install Mopidy-MusicBox-Webclient
+
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Configuring NGINX web server..."
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+
+#=================================================
+# SPECIFIC SETUP
+#=================================================
+# BUILD MULTIMEDIA
+#=================================================
+ynh_script_progression --message="Building multimedia directory..."
+
+media_dir="/home/yunohost.multimedia/share/Music"
+ynh_multimedia_build_main_dir      # /home/yunohost.multimedia
+
+
+#=================================================
+# ADD A CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding a configuration file..."
+
+ynh_add_config --template="../conf/app.conf" --destination="$install_dir/$app.conf"
+
+chmod 400 "$install_dir/$app.conf"
+chown $app:$app "$install_dir/$app.conf"
+
+
+#=================================================
+# SETUP SYSTEMD
+#=================================================
+ynh_script_progression --message="Configuring a systemd service..."
+
+# Create a dedicated systemd config
+ynh_add_systemd_config
+
+
+#=================================================
+# PROVIDE ADDITIONAL SHELL COMMAND 
+#=================================================
+ynh_script_progression --message="Provide additional shell command..."
+
+cmd_file="/usr/local/bin/mopidyctl"
+ynh_add_config --template="../sources/extra_files/mopidyctl" --destination="$cmd_file"
+
+chmod +x "$cmd_file"
+
+
+#=================================================
+# PROVIDE EXAMPLES
+#=================================================
+
+media_dir="/home/yunohost.multimedia/share/Music"
+
+# provide example m3u-playlist
+mkdir -p "$data_dir/data/m3u/"
+cp -a ../sources/extra_files/radio_international.m3u "$data_dir/data/m3u/radio_international.m3u"
+
+#provide example podcasts
+mkdir -p "$data_dir/data/podcast"
+cp -a ../sources/extra_files/bbc.opml "$data_dir/data/podcast/bbc.opml"
+
+#provide example local music file
+if [ "$(ls -A "$media_dir" 2> /dev/null)" == "" ]; then   # copy example.mp3 to mediadir if empty (for test purpose) 
+    cp -a ../sources/extra_files/Tryad_Beauty.mp3 "$media_dir"
+fi
+
+#=================================================
+# SCAN LOCAL MEDIA DIRECTORY
+#=================================================
+ynh_script_progression --message="Scan local media directory..."
+
+"$cmd_file" local scan  2>&1
+
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# INTEGRATE SERVICE IN YUNOHOST
+#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..."
+
+if [ $mpd_port -ne 0 ]; then
+	yunohost service add $app --description="Mopidy music server" --needs_exposed_ports=$mpd_port
+else
+	yunohost service add $app --description="Mopidy music server"
+fi
+
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression --message="Starting a systemd service..."
+
+# Start a systemd service
+ynh_systemd_action --service_name=$app --action="start"
+
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+ynh_script_progression --message="Configuring permissions..."
+
+# Make app public if necessary
+if [ $init_main_permission = "visitors" ]
+then
+	# Everyone can access the app.
+	# The "main" permission is automatically created before the install script.
+	ynh_permission_update --permission="main" --add="visitors"
+fi
+
+ynh_permission_url --permission="main" --add_url="$domain/mopidy/ws"
+ynh_permission_url --permission="main" --add_url="$domain/musicbox_webclient"
+ynh_permission_url --permission="main" --add_url="$domain/local"
+
+
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading NGINX web server..."
+
+ynh_systemd_action --service_name=nginx --action=reload
+
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Installation of $app completed" --last

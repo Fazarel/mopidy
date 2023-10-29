@@ -1,0 +1,17 @@
+[Unit]
+Description=Mopidy music server
+After=avahi-daemon.service
+After=dbus.service
+After=network.target
+After=nss-lookup.target
+After=pulseaudio.service
+After=remote-fs.target
+After=sound.target
+
+[Service]
+User=__APP__
+PermissionsStartOnly=true
+ExecStart=__APP__ --config __INSTALL_DIR__/__APP__.conf
+
+[Install]
+WantedBy=multi-user.target

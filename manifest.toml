@@ -1,0 +1,91 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
+packaging_format = 2
+
+id = "mopidy"
+name = "Mopidy"
+description.en = "Play music, podcasts and radio programs from local disk and various streaming services"
+description.fr = "Écouter de la musique, des podcasts et des programmes radio depuis le disque local et divers services de streaming"
+
+version = "3.4.1~ynh1"
+
+maintainers = ["Fazarel"]
+
+[upstream]
+# NB: Only the "license" key is mandatory. Remove entries for which there's no relevant data
+license = "Apache-2.0"
+website = "https://www.mopidy.com"
+admindoc = "https://docs.mopidy.com/en/latest/"
+code = "https://github.com/mopidy/mopidy"
+
+[integration]
+yunohost = ">= 11.1.21"
+# FIXME: can be replaced by a list of supported archs using the dpkg --print-architecture nomenclature (amd64/i386/armhf/arm64), for example: ["amd64", "i386"]
+architectures = ["amd64", "i386", "armhf"]
+multi_instance = false
+
+# true, false, or "not_relevant".
+# Not to confuse with the "sso" key: the "ldap" key corresponds to wether or not a user *can* login on the app using
+# its YunoHost credentials.
+ldap = "not_relevant"
+
+
+# true, false, or "not_relevant".
+# Not to confuse with the "ldap" key: the "sso" key corresponds to wether or not a user is *automatically logged-in*
+# on the app when logged-in on the YunoHost portal.
+sso = "not_relevant"
+
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.domain]
+    # this is a generic question - ask strings are automatically handled by YunoHost's core
+    type = "domain"
+
+    [install.path]
+    # this is a generic question - ask strings are automatically handled by YunoHost's core
+    type = "path"
+    default = "/mopidy"
+
+    [install.init_main_permission]
+    # this is a generic question - ask strings are automatically handled by YunoHost's core
+    # This won't be saved as setting and will instead be used to initialize the SSOwat permission
+    help.en = "If visitors selected, Mopidy will be accessible by users without a YunoHost account. This can be changed later via the webadmin."
+    help.fr = "Si « Visiteurs » est sélectionné, Mopidy sera accessible même par les utilisateurs n’ayant pas de compte YunoHost. Vous pourrez changer ce réglage plus tard dans l’interface d’administration."
+    type = "group"
+    default = "visitors"
+
+    [install.admin]
+    # this is a generic question - ask strings are automatically handled by YunoHost's core
+    type = "user"
+
+    [install.mpd_ext]
+    type = "boolean"
+    ask.en = "Activate MPD extension (this will open port 6600)"
+    ask.fr = "Activer l'extension MPD (cela ouvrira le port 6600)"
+    default = false
+
+[resources]
+
+    [resources.system_user]
+    # (empty - defaults are usually okay)
+    # home: (default: /var/www/__APP__) Defines the home property for this user. NB: unfortunately you can't simply use __INSTALL_DIR__ or __DATA_DIR__ for now
+
+    [resources.install_dir]
+    # (empty - defaults are usually okay)
+    # dir: (default: /var/www/__APP__) The full path of the install dir
+    # owner: (default: __APP__:rwx) The owner (and owner permissions) for the install dir
+    # group: (default: __APP__:rx) The group (and group permissions) for the install dir
+
+    [resources.data_dir]
+    # (empty - defaults are usually okay)
+    # dir: (default: /home/yunohost.app/__APP__) The full path of the data dir
+    # subdirs: (default: empty list) A list of subdirs to initialize inside the data dir. For example, ['foo', 'bar']
+    # owner: (default: __APP__:rwx) The owner (and owner permissions) for the data dir
+    # group: (default: __APP__:rx) The group (and group permissions) for the data dir
+    sudirs = ['data', 'cache']
+
+    [resources.apt]
+    packages = "python3-pip"
