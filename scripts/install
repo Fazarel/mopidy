@@ -49,9 +49,8 @@ ynh_script_progression --message="Defining ports..."
 #fi
 
 port="6680"
-mdp_port="6600"
+mpd_port="6600"
 mpd_state="true"
-
 
 #=================================================
 # CREATE DEDICATED USER
