@@ -48,7 +48,7 @@ ynh_remove_systemd_config
 ynh_script_progression --message="Removing app pakages..." --weight=2
 
 # Remove packages and their uneeded dependencies
-#sudo python3 -m pip uninstall Mopidy-MusicBox-Webclient
+sudo python3 -m pip uninstall Mopidy-MusicBox-Webclient -y
 ynh_package_autoremove mopidy mopidy-local mopidy-mpd mopidy-podcast mopidy-podcast-itunes mopidy-soundcloud
 
 
