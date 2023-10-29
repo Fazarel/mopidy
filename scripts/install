@@ -34,7 +34,7 @@ ynh_abort_if_errors
 ynh_script_progression --message="Validating installation parameters..."
 
 # Register (book) web path
-ynh_webpath_register --app=$app --domain=$domain --path_url=$path
+#ynh_webpath_register --app=$app --domain=$domain --path_url=$path
 
 
 #=================================================
