@@ -29,6 +29,24 @@ ynh_abort_if_errors
 
 
 #=================================================
+# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
+#=================================================
+ynh_script_progression --message="Validating installation parameters..."
+
+# Register (book) web path
+ynh_webpath_register --app=$app --domain=$domain --path_url=$path
+
+
+#=================================================
+# STORE SETTINGS FROM MANIFEST
+#=================================================
+ynh_script_progression --message="Storing installation settings..."
+
+ynh_app_setting_set --app=$app --key=domain --value=$domain
+ynh_app_setting_set --app=$app --key=path --value=$path
+
+
+#=================================================
 # STANDARD MODIFICATIONS
 #=================================================
 # FIND AND OPEN A PORT
@@ -51,6 +69,9 @@ ynh_script_progression --message="Defining ports..."
 port="6680"
 mpd_port="6600"
 mpd_state="true"
+
+ynh_app_setting_set --app=$app --key=port --value=$port
+ynh_app_setting_set --app=$app --key=mpd_port --value=$mpd_port
 
 #=================================================
 # CREATE DEDICATED USER
@@ -206,7 +227,7 @@ ynh_script_progression --message="Configuring permissions..."
 	#ynh_permission_update --permission="main" --add="visitors"
 #fi
 
-yunohost tools shell -c 'from yunohost.permission import permission_create; permission_create("mopidy.main", url="/", allowed=["all_users"])'
+#yunohost tools shell -c 'from yunohost.permission import permission_create; permission_create("mopidy.main", url="/", allowed=["all_users"])'
 ynh_permission_update --permission="main" --add="visitors"
 ynh_permission_url --permission="main" --add_url="$domain/mopidy/ws"
 ynh_permission_url --permission="main" --add_url="$domain/musicbox_webclient"
