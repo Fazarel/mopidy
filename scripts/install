@@ -33,7 +33,7 @@ ynh_abort_if_errors
 #=================================================
 # FIND AND OPEN A PORT
 #=================================================
-#ynh_script_progression --message="Finding an available port..."
+ynh_script_progression --message="Defining ports..."
 
 # Find an available port
 #port=$(ynh_find_port --port=6680)
@@ -47,6 +47,10 @@ ynh_abort_if_errors
 #else
 #	mpd_state="false"
 #fi
+
+port=6680
+mdp_port=6600
+mpd_state="true"
 
 
 #=================================================
@@ -163,7 +167,7 @@ ynh_script_progression --message="Integrating service in YunoHost..."
 #	yunohost service add $app --description="Mopidy music server"
 #fi
 
-yunohost service add $app --description="Mopidy music server" --needs_exposed_ports=6600
+yunohost service add $app --description="Mopidy music server" --needs_exposed_ports=$mpd_port
 
 
 #=================================================
