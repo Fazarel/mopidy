@@ -33,29 +33,29 @@ ynh_abort_if_errors
 #=================================================
 # FIND AND OPEN A PORT
 #=================================================
-ynh_script_progression --message="Finding an available port..."
+#ynh_script_progression --message="Finding an available port..."
 
 # Find an available port
-port=$(ynh_find_port --port=6680)
-ynh_app_setting_set --app=$app --key=port --value=$port
+#port=$(ynh_find_port --port=6680)
+#ynh_app_setting_set --app=$app --key=port --value=$port
 
-if [ $mpd_ext -eq 1 ]; then
-	mpd_port=$(ynh_find_port --port=6600)
-	ynh_app_setting_set --app=$app --key=mpd_port --value=$mpd_port
-	ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $mpd_port
-	mpd_state="true"
-else
-	mpd_state="false"
-fi
+#if [ $mpd_ext -eq 1 ]; then
+#	mpd_port=$(ynh_find_port --port=6600)
+#	ynh_app_setting_set --app=$app --key=mpd_port --value=$mpd_port
+#	ynh_exec_warn_less yunohost firewall allow --no-upnp TCP $mpd_port
+#	mpd_state="true"
+#else
+#	mpd_state="false"
+#fi
 
 
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Configuring system user..."
+#ynh_script_progression --message="Configuring system user..."
 
 # Create a system user
-ynh_system_user_create --username=$app --home_dir="$install_dir" --use_shell --groups="audio"
+#ynh_system_user_create --username=$app --home_dir="$install_dir" --use_shell --groups="audio"
 
 
 #=================================================
@@ -157,11 +157,13 @@ ynh_script_progression --message="Scan local media directory..."
 #=================================================
 ynh_script_progression --message="Integrating service in YunoHost..."
 
-if [ $mpd_port -ne 0 ]; then
-	yunohost service add $app --description="Mopidy music server" --needs_exposed_ports=$mpd_port
-else
-	yunohost service add $app --description="Mopidy music server"
-fi
+#if [ $mpd_port -ne 0 ]; then
+#	yunohost service add $app --description="Mopidy music server" --needs_exposed_ports=$mpd_port
+#else
+#	yunohost service add $app --description="Mopidy music server"
+#fi
+
+yunohost service add $app --description="Mopidy music server" --needs_exposed_ports=6600
 
 
 #=================================================
