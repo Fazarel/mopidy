@@ -48,8 +48,8 @@ ynh_script_progression --message="Defining ports..."
 #	mpd_state="false"
 #fi
 
-port=6680
-mdp_port=6600
+port="6680"
+mdp_port="6600"
 mpd_state="true"
 
 
