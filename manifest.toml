@@ -61,11 +61,11 @@ ram.runtime = "50M"
     # this is a generic question - ask strings are automatically handled by YunoHost's core
     type = "user"
 
-    [install.mpd_ext]
-    type = "boolean"
-    ask.en = "Activate MPD extension (this will open port 6600)"
-    ask.fr = "Activer l'extension MPD (cela ouvrira le port 6600)"
-    default = false
+    #[install.mpd_ext]
+    #type = "boolean"
+    #ask.en = "Activate MPD extension (this will open port 6600)"
+    #ask.fr = "Activer l'extension MPD (cela ouvrira le port 6600)"
+    #default = false
 
 [resources]
 
