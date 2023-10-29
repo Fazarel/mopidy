@@ -55,10 +55,10 @@ mpd_state="true"
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
-#ynh_script_progression --message="Configuring system user..."
+ynh_script_progression --message="Configuring system user..."
 
 # Create a system user
-#ynh_system_user_create --username=$app --home_dir="$install_dir" --use_shell --groups="audio"
+ynh_system_user_create --username=$app --home_dir="$install_dir" --use_shell --groups="audio"
 
 
 #=================================================
