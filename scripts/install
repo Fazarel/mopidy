@@ -58,7 +58,7 @@ mpd_state="true"
 ynh_script_progression --message="Configuring system user..."
 
 # Create a system user
-ynh_system_user_create --username=$app --home_dir="$install_dir" --use_shell --groups="audio"
+ynh_system_user_create --username=$app --home_dir="$data_dir" --use_shell --groups="audio"
 
 
 #=================================================
